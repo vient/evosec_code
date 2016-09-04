@@ -7,6 +7,9 @@
 #include "md5.h"
 #include "pe.h"
 
+#include <iostream>
+using namespace std;
+
 class Engine
 {
 
@@ -104,24 +107,25 @@ class Engine
 
     std::string CheckWholeFile(const std::vector<unsigned char> &file)
     {
-        auto md5_provider = MD5();
-        std::string MD5(md5_provider.digestMemory(file.data(), file.size()));
+
+        std::string MD5 = md5(file);
         for (auto & x : WholeMD5Records)
             if (x.Signature == MD5 && file.size() == x.Size)
                 return x.Verdict;
+        return "";
     }
 
     std::string CheckParts(const std::vector<unsigned char> &file)
     {
-        auto md5_provider = MD5();
         auto sections = PESections(file);
         for (auto & section : sections)
         {
-            std::string MD5(md5_provider.digestMemory(section.second.data(), section.second.size()));
+            std::string MD5 = md5(file);
             for (auto & x : PartialMD5Records)
                 if (x.Signature == MD5 && section.second.size() == x.Size)
                     return x.Verdict;
         }
+        return "";
     }
 
     std::string CheckStrings(const std::vector<unsigned char> &file)
@@ -130,7 +134,8 @@ class Engine
     }
 
 public:
-    Engine(const std::string base_path)     // TODO: different path styles
+    // TODO: different path styles
+    Engine(const std::string base_path)
     {
         LoadHDB(base_path + "/main.hdb");
         LoadMDB(base_path + "/main.mdb");
