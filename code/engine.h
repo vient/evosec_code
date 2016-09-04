@@ -29,7 +29,7 @@ class Engine
     std::vector<MD5Record> PartialMD5Records;
     std::vector<StringRecord> StringRecords;
 
-    void LoadHDB(const std::string path) 
+    void LoadHDB(const std::string path)
     {
         std::ifstream in(path);
         std::string temp;
@@ -38,7 +38,7 @@ class Engine
             if (temp.find(':') == std::string::npos)
                 continue;
             MD5Record new_record;
-            
+
             auto it = temp.find(':');
             new_record.Signature = temp.substr(0, it);
             auto nit = temp.find(':', it + 1);
@@ -48,7 +48,7 @@ class Engine
         }
     }
 
-    void LoadMDB(const std::string path) 
+    void LoadMDB(const std::string path)
     {
         std::ifstream in(path);
         std::string temp;
@@ -63,11 +63,11 @@ class Engine
             auto nit = temp.find(':', it + 1);
             new_record.Signature = temp.substr(it + 1, nit - it - 1);
             new_record.Verdict = temp.substr(nit + 1);
-            WholeMD5Records.emplace_back(new_record);
+            PartialMD5Records.emplace_back(new_record);
         }
     }
 
-    void LoadNDB(const std::string path) 
+    void LoadNDB(const std::string path)
     {
         std::ifstream in(path);
         std::string temp;
@@ -132,9 +132,9 @@ class Engine
 public:
     Engine(const std::string base_path)     // TODO: different path styles
     {
-        LoadHDB(base_path + "\\main.hdb");
-        LoadMDB(base_path + "\\main.mdb");
-        LoadNDB(base_path + "\\main.ndb");
+        LoadHDB(base_path + "/main.hdb");
+        LoadMDB(base_path + "/main.mdb");
+        LoadNDB(base_path + "/main.ndb");
     }
     ~Engine() {}
 

@@ -4,6 +4,7 @@
 #define PE_H
 
 #include <vector>
+#include <stdint.h>
 
 typedef int8_t CHAR;
 typedef uint8_t UCHAR;
