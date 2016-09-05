@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <regex>
 
 #include "md5.h"
 #include "pe.h"
@@ -22,9 +23,10 @@ class Engine
 
     struct StringRecord
     {
+        enum class RecordType : int { LEFT_BOUND = -1, ANY, PE, OLE2, HTML, MAIL, GRAPHICS, ELF, ASCII, RIGHT_BOUND };
         std::string Signature;
-        size_t Begin;
-        size_t End;
+        RecordType Type;
+        std::string Offset;
         std::string Verdict;
     };
 
@@ -83,18 +85,16 @@ class Engine
             auto it = temp.find(':');
             new_record.Verdict = temp.substr(0, it);
             auto nit = temp.find(':', it + 1);
-            auto beg = temp.substr(it + 1, nit - it - 1);
-            if (beg == "*")
-                new_record.Begin = 0;
-            else
-                new_record.Begin = atoi(beg.c_str());
+            auto type = atoi(temp.substr(it + 1, nit - it - 1).c_str());
+            assert(type > static_cast<int>(StringRecord::RecordType::LEFT_BOUND) && type < static_cast<int>(StringRecord::RecordType::RIGHT_BOUND));
+            new_record.Type = static_cast<StringRecord::RecordType>(type);
             it = nit;
             nit = temp.find(':', it + 1);
-            auto end = temp.substr(it + 1, nit - it - 1);
-            if (end == "*")
-                new_record.Begin = 0;
+            auto offset = temp.substr(it + 1, nit - it - 1);
+            if (offset == "*")
+                new_record.Offset = "0";
             else
-                new_record.Begin = atoi(end.c_str());
+                new_record.Offset = offset;     // there are offsets like EP+0,200
             it = nit;
             nit = temp.find(':', it + 1);
             if (nit == std::string::npos)
@@ -130,6 +130,7 @@ class Engine
 
     std::string CheckStrings(const std::vector<unsigned char> &file)
     {
+
         return "";
     }
 
