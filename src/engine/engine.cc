@@ -103,7 +103,7 @@ std::string Engine::CheckParts(const std::vector<unsigned char> &file)
     return "";
 }
 
-std::string Engine::CheckStrings(const std::vector<unsigned char> &file)
+std::string Engine::CheckStrings(const std::vector<unsigned char> &/* file */)
 {
     return "";
 }
