@@ -136,7 +136,6 @@ const std::vector<std::pair<std::string, std::vector<unsigned char>>> PESections
         return sections;
 
     auto MachineID = pe_header->FileHeader.Machine;
-    std::cout << std::hex << ' ' << MachineID << ' ';
     if (MachineID != 0x14C && MachineID != (WORD)0x8664)
         return sections;
 
@@ -154,7 +153,6 @@ const std::vector<std::pair<std::string, std::vector<unsigned char>>> PESections
             sections.back().second = std::vector<unsigned char>(
                 file.begin() + section_ptr->PointerToRawData,
                 file.begin() + section_ptr->PointerToRawData + section_ptr->SizeOfRawData);
-            std::cout << std::endl << "section" << i;
         }
     }
     catch (...)
