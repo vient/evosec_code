@@ -44,6 +44,7 @@
 #include <QWidget>
 #include <QDir>
 #include <QFileDialog>
+#include <QTableWidget>
 
 QT_BEGIN_NAMESPACE
 class QComboBox;
@@ -53,7 +54,9 @@ class QTableWidget;
 class QTableWidgetItem;
 QT_END_NAMESPACE
 
-//! [0]
+
+#include "engine.h"
+
 class Window : public QWidget
 {
     Q_OBJECT
@@ -66,6 +69,7 @@ private slots:
     void scan();
 
 private:
+    void createFilesTable();
     QPushButton *createButton(const QString &text, const char *member);
     QComboBox *createComboBox(const QString &text = QString());
 
@@ -75,6 +79,9 @@ private:
     QPushButton *scanButton;
 
     QDir currentDir;
+    QTableWidget *filesTable;
+
+    Engine engine;
 };
 //! [0]
 
