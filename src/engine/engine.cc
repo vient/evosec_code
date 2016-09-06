@@ -62,6 +62,9 @@ void Engine::LoadNDB(const std::string &path)
         new_record.Verdict = temp.substr(0, it);
         auto nit = temp.find(':', it + 1);
         auto type = atoi(temp.substr(it + 1, nit - it - 1).c_str());
+        assert(
+            type > static_cast<int>(StringRecord::RecordType::ENUM_BEGIN) && 
+            type < static_cast<int>(StringRecord::RecordType::ENUM_END));
         new_record.Type = static_cast<StringRecord::RecordType>(type);
         it = nit;
         nit = temp.find(':', it + 1);
@@ -86,7 +89,7 @@ std::string Engine::CheckWholeFile(const std::vector<unsigned char> &file)
     MD5Record md5_record = {
         md5(file),
         file.size(),
-        "none"
+        ""
     };
     auto iterator = WholeMD5Records.find(md5_record);
     return iterator != WholeMD5Records.end() ? iterator->Verdict : "";
@@ -101,7 +104,7 @@ std::string Engine::CheckParts(const std::vector<unsigned char> &file)
         MD5Record md5_record = {
             MD5,
             section.second.size(),
-            "none"
+            ""
         };
         auto iterator = PartialMD5Records.find(md5_record);
         if (iterator != PartialMD5Records.end()) {

@@ -20,7 +20,24 @@ class Engine
 
     struct StringRecord
     {
-        enum class RecordType : int { LEFT_BOUND = -1, ANY, PE, OLE2, HTML, MAIL, GRAPHICS, ELF, ASCII, RIGHT_BOUND };
+        enum class RecordType : int 
+        { 
+            ENUM_BEGIN = -1, 
+            ANY, 
+            PE, 
+            OLE2, 
+            HTML, 
+            MAIL, 
+            GRAPHICS, 
+            ELF, 
+            ASCII, 
+            UNUSED,
+            MACH_O,
+            PDF,
+            FLASH,
+            JAVA,
+            ENUM_END
+        };
         std::string Signature;
         RecordType Type;
         std::string Offset;
