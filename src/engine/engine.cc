@@ -25,7 +25,7 @@ void Engine::LoadHDB(const std::string &path)
         auto nit = temp.find(':', it + 1);
         new_record.Size = atoi(temp.substr(it + 1, nit - it - 1).c_str());
         new_record.Verdict = temp.substr(nit + 1);
-        WholeMD5Records.emplace_back(new_record);
+        WholeMD5Records.insert(new_record);
     }
 }
 
@@ -44,7 +44,7 @@ void Engine::LoadMDB(const std::string &path)
         auto nit = temp.find(':', it + 1);
         new_record.Signature = temp.substr(it + 1, nit - it - 1);
         new_record.Verdict = temp.substr(nit + 1);
-        PartialMD5Records.emplace_back(new_record);
+        PartialMD5Records.insert(new_record);
     }
 }
 
@@ -83,22 +83,30 @@ void Engine::LoadNDB(const std::string &path)
 std::string Engine::CheckWholeFile(const std::vector<unsigned char> &file)
 {
 
-    std::string MD5 = md5(file);
-    for (auto & x : WholeMD5Records)
-        if (x.Signature == MD5 && file.size() == x.Size)
-            return x.Verdict;
-    return "";
+    MD5Record md5_record = {
+        md5(file),
+        file.size(),
+        "none"
+    };
+    auto iterator = WholeMD5Records.find(md5_record);
+    return iterator != WholeMD5Records.end() ? iterator->Verdict : "";
 }
 
 std::string Engine::CheckParts(const std::vector<unsigned char> &file)
 {
+    std::string MD5 = md5(file);
     auto sections = PESections(file);
     for (auto & section : sections)
     {
-        std::string MD5 = md5(file);
-        for (auto & x : PartialMD5Records)
-            if (x.Signature == MD5 && section.second.size() == x.Size)
-                return x.Verdict;
+        MD5Record md5_record = {
+            MD5,
+            section.second.size(),
+            "none"
+        };
+        auto iterator = PartialMD5Records.find(md5_record);
+        if (iterator != PartialMD5Records.end()) {
+            return iterator->Verdict;
+        }
     }
     return "";
 }

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 class Engine
 {
@@ -11,6 +12,10 @@ class Engine
         std::string Signature;
         size_t Size;
         std::string Verdict;
+
+        bool operator<(const MD5Record &record) const {
+            return Signature < record.Signature;
+        }
     };
 
     struct StringRecord
@@ -21,8 +26,8 @@ class Engine
         std::string Offset;
         std::string Verdict;
     };
-    std::vector<MD5Record> WholeMD5Records;
-    std::vector<MD5Record> PartialMD5Records;
+    std::set<MD5Record> WholeMD5Records;
+    std::set<MD5Record> PartialMD5Records;
     std::vector<StringRecord> StringRecords;
 
 private:
