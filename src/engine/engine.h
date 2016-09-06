@@ -14,23 +14,23 @@ class Engine
         std::string Verdict;
 
         bool operator<(const MD5Record &record) const {
-            return Signature < record.Signature;
+            return Signature < record.Signature || (Signature == record.Signature && Size < record.Size);
         }
     };
 
     struct StringRecord
     {
-        enum class RecordType : int 
-        { 
-            ENUM_BEGIN = -1, 
-            ANY, 
-            PE, 
-            OLE2, 
-            HTML, 
-            MAIL, 
-            GRAPHICS, 
-            ELF, 
-            ASCII, 
+        enum class RecordType : int
+        {
+            ENUM_BEGIN = -1,
+            ANY,
+            PE,
+            OLE2,
+            HTML,
+            MAIL,
+            GRAPHICS,
+            ELF,
+            ASCII,
             UNUSED,
             MACH_O,
             PDF,
@@ -58,6 +58,7 @@ private:
     std::string CheckStrings(const std::vector<unsigned char> &file);
 
 public:
+    Engine() {}
     Engine(const std::string base_path);
     ~Engine() {}
     std::string Check(const std::vector<unsigned char> &file);

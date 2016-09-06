@@ -63,7 +63,7 @@ void Engine::LoadNDB(const std::string &path)
         auto nit = temp.find(':', it + 1);
         auto type = atoi(temp.substr(it + 1, nit - it - 1).c_str());
         assert(
-            type > static_cast<int>(StringRecord::RecordType::ENUM_BEGIN) && 
+            type > static_cast<int>(StringRecord::RecordType::ENUM_BEGIN) &&
             type < static_cast<int>(StringRecord::RecordType::ENUM_END));
         new_record.Type = static_cast<StringRecord::RecordType>(type);
         it = nit;
@@ -92,7 +92,7 @@ std::string Engine::CheckWholeFile(const std::vector<unsigned char> &file)
         ""
     };
     auto iterator = WholeMD5Records.find(md5_record);
-    return iterator != WholeMD5Records.end() ? iterator->Verdict : "";
+    return iterator != WholeMD5Records.end() ? iterator->Verdict : "CLEAN";
 }
 
 std::string Engine::CheckParts(const std::vector<unsigned char> &file)
@@ -111,12 +111,12 @@ std::string Engine::CheckParts(const std::vector<unsigned char> &file)
             return iterator->Verdict;
         }
     }
-    return "";
+    return "CLEAN";
 }
 
 std::string Engine::CheckStrings(const std::vector<unsigned char> &/* file */)
 {
-    return "";
+    return "CLEAN";
 }
 
 Engine::Engine(const std::string base_path)
@@ -129,11 +129,11 @@ Engine::Engine(const std::string base_path)
 std::string Engine::Check(const std::vector<unsigned char> &file)
 {
     auto x = CheckWholeFile(file);
-    if (x.size())
+    if (x != "CLEAN")
         return x;
 
     x = CheckParts(file);
-    if (x.size())
+    if (x != "CLEAN")
         return x;
 
     return CheckStrings(file);
