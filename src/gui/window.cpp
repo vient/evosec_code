@@ -3,8 +3,11 @@
 #include "window.h"
 #include <QDebug>
 
+#include <fstream>
+#include <vector>
+#include <string>
 
-enum { absoluteFileNameRole = Qt::UserRole + 1 };
+typedef unsigned char BYTE;
 
 Window::Window(QWidget *parent)
     : QWidget(parent)
@@ -12,7 +15,7 @@ Window::Window(QWidget *parent)
     browseButton = createButton(tr("&Browse..."), SLOT(browse()));
     directoryComboBox = createComboBox(QDir::currentPath());
     directoryLabel = new QLabel(tr("Select file:"));
-    scanButton = createButton(tr("&Scan..."), SLOT(scan()));
+    scanButton = createButton(tr("&Scan"), SLOT(scan()));
     connect(scanButton, &QAbstractButton::clicked, this, &Window::find);
 
     createFilesTable();
@@ -21,14 +24,12 @@ Window::Window(QWidget *parent)
     mainLayout->addWidget(directoryLabel, 2, 0);
     mainLayout->addWidget(directoryComboBox, 2, 1);
     mainLayout->addWidget(browseButton, 2, 2);
-    mainLayout->addWidget(scanButton, 4, 2);
+    mainLayout->addWidget(scanButton, 4, 1, Qt::AlignHCenter);
     mainLayout->addWidget(filesTable, 3, 0, 1, 3);
     setLayout(mainLayout);
 
-    setWindowTitle(tr("Find Files"));
+    setWindowTitle(tr("Evosec"));
     resize(700, 300);
-
-    engine = Engine("/Users/emilchess/evosec_code");
 }
 
 void Window::browse()
@@ -48,6 +49,15 @@ QPushButton *Window::createButton(const QString &text, const char *member)
     QPushButton *button = new QPushButton(text);
     connect(button, SIGNAL(clicked()), this, member);
     return button;
+}
+
+void Window::loadEngine() {
+    engine = Engine(BASE_PATH);
+}
+
+void Window::showEvent(QShowEvent *)
+{
+    QTimer::singleShot(50, this, SLOT(loadEngine()));
 }
 
 QComboBox *Window::createComboBox(const QString &text)
@@ -71,12 +81,6 @@ void Window::createFilesTable()
     filesTable->verticalHeader()->hide();
     filesTable->setShowGrid(false);
 }
-
-#include <fstream>
-#include <vector>
-#include <string>
-
-typedef unsigned char BYTE;
 
 std::vector<BYTE> readFile(const std::string &path)
 {

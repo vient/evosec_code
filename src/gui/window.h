@@ -56,6 +56,7 @@ QT_END_NAMESPACE
 
 
 #include "engine.h"
+#include <string>
 
 class Window : public QWidget
 {
@@ -67,9 +68,11 @@ public:
 private slots:
     void browse();
     void scan();
+    void loadEngine();
 
 private:
     void createFilesTable();
+    virtual void showEvent(QShowEvent *);
     QPushButton *createButton(const QString &text, const char *member);
     QComboBox *createComboBox(const QString &text = QString());
 
@@ -82,6 +85,7 @@ private:
     QTableWidget *filesTable;
 
     Engine engine;
+    const std::string BASE_PATH = "/Users/emilchess/evosec_code";
 };
 //! [0]
 
