@@ -1,13 +1,14 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 
 #include "engine.h"
 #include <cstdio>
 
 typedef unsigned char BYTE;
 
-std::vector<BYTE> readFile(const char* filename)
+std::vector<BYTE> readFile(char *filename)
 {
     std::ifstream file(filename, std::ios::binary);
 
@@ -15,14 +16,15 @@ std::vector<BYTE> readFile(const char* filename)
                               std::istreambuf_iterator<char>());
 }
 
-using namespace std;
 
-int main()
+
+int main(int argc, char *argv[])
 {
-    char* filename = "malware.exe";
-    vector<BYTE> input = readFile(filename);
-    Engine e("/Users/emilchess/evosec_code");
-    string res = e.Check(input);
-    cout << res;
+    Engine engine("/Users/emilchess/evosec_code");
+    for (int i = 1; i < argc; i++) {
+        std::vector<BYTE> inputFile = readFile(argv[i]);
+        std::string verdict = engine.Check(inputFile);
+        std::cout << argv[i] << " " << verdict << "\n";
+    }
     return 0;
 }
