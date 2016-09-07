@@ -1,8 +1,7 @@
-project(evosec)
+set(OPENSSL_ROOT_DIR /usr/local/Cellar/openssl/*)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Werror -pedantic")
-link_directories(/usr/local/Cellar/openssl/1.0.2h_1/lib/)
-include_directories(/usr/local/Cellar/openssl/1.0.2h_1/include/ SYSTEM)
-include_directories(/Users/emilchess/evosec_code/src/engine)
+find_package(OpenSSL REQUIRED)
+include_directories(${OPENSSL_INCLUDE_DIR} .)
 add_library(engine SHARED engine.cc)
 target_link_libraries(engine crypto)
-
+add_subdirectory(examples)
